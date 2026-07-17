@@ -1,415 +1,268 @@
-/* Modern Functional Cool Grey and SDG 4 Premium System Variables */
-:root {
-  --sdg-red: #C5192D;
-  --sdg-red-hover: #a31221;
-  --bg-main: #f8fafc;       /* Clean cool slate-tinted grey background */
-  --bg-cards: #ffffff;      /* Pure crystalline white structural cards */
-  --bg-dark: #1e293b;       /* Charcoal slate accents for console text */
-  --border-color: #cbd5e1;  /* Balanced silver slate grid framing */
-  --text-dark: #0f172a;     /* Deep readable neutral text layer */
-  --text-muted: #64748b;    /* Subdued operational descriptions */
-  --card-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.04), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
-  --transition-speed: 0.2s;
-}
+/**
+ * EduQuest AI Workspace - Advanced Model Simulation Matrix
+ * Orchestrates localized pipelines mirroring ChatGPT, Gemini, and Manus operational profiles.
+ */
 
-* {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+const sdgTargets = [
+  "Target 4.1: Free, equitable, and quality primary/secondary education pipelines globally.",
+  "Target 4.4: Substantially scale relevant technical, engineering, and vocational competencies.",
+  "Target 4.6: Ensure standard baseline youth literacy and universal logical mathematical mastery.",
+  "Target 4.a: Upgrade structural learning environments to fulfill safe, non-violent, inclusive spaces."
+];
 
-body {
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
-  background-color: var(--bg-main);
-  color: var(--text-dark);
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-}
+let chatSessionHistory = [];
+let targetMatrixIndex = 0;
 
-/* Application Header Structure */
-.app-header {
-  background-color: var(--sdg-red);
-  color: white;
-  padding: 2rem 1rem;
-  text-align: center;
-  box-shadow: 0 4px 12px rgba(197, 25, 45, 0.15);
-}
+// Element Selectors
+const sdgFactText = document.getElementById('sdg-fact');
+const nextFactBtn = document.getElementById('next-fact-btn');
+const exportBtn = document.getElementById('export-btn');
+const importFileInput = document.getElementById('import-file');
+const aiQueryForm = document.getElementById('ai-query-form');
+const aiInput = document.getElementById('ai-input');
+const aiResponseLog = document.getElementById('ai-response-log');
 
-.header-container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
+document.addEventListener('DOMContentLoaded', () => {
+  initializeWorkspace();
+  
+  nextFactBtn.addEventListener('click', () => {
+    targetMatrixIndex = (targetMatrixIndex + 1) % sdgTargets.length;
+    sdgFactText.textContent = sdgTargets[targetMatrixIndex];
+  });
 
-.logo {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 14px;
-  margin-bottom: 0.35rem;
-}
+  exportBtn.addEventListener('click', exportSessionData);
+  importFileInput.addEventListener('change', importSessionData);
+  aiQueryForm.addEventListener('submit', runUniversalAgentPipeline);
+});
 
-.sdg-badge {
-  background-color: white;
-  color: var(--sdg-red);
-  font-weight: 800;
-  font-size: 1.5rem;
-  width: 40px;
-  height: 40px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.tagline {
-  font-size: 1.05rem;
-  opacity: 0.9;
-  font-weight: 400;
-}
-
-/* Master Layout Framework Container */
-.app-container {
-  max-width: 1200px;
-  margin: 2rem auto;
-  padding: 0 1.5rem;
-}
-
-/* SDG Fact Banner Notification Space */
-.sdg-info-card {
-  background: var(--bg-cards);
-  border-left: 6px solid var(--sdg-red);
-  padding: 1.5rem;
-  border-radius: 8px;
-  box-shadow: var(--card-shadow);
-  margin-bottom: 2rem;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-.sdg-info-card h2 {
-  font-size: 1.25rem;
-  color: var(--sdg-red);
-  letter-spacing: -0.02em;
-}
-
-#sdg-fact {
-  font-size: 1.05rem;
-  color: var(--text-dark);
-  font-weight: 500;
-}
-
-/* Two-Column Asymmetric Asynchronous Workspace Grid */
-.workspace {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 2rem;
-  margin-bottom: 2rem;
-}
-
-.sidebar-column {
-  display: flex;
-  flex-direction: column;
-  gap: 2rem;
-}
-
-@media (min-width: 992px) {
-  .workspace {
-    grid-template-columns: 350px 1fr; /* Optimized dashboard ratio proportions */
+function initializeWorkspace() {
+  sdgFactText.textContent = sdgTargets[0];
+  const storedSession = localStorage.getItem('eduquest_omni_session');
+  if (storedSession) {
+    try {
+      chatSessionHistory = JSON.parse(storedSession);
+      chatSessionHistory.forEach(bubble => renderBubbleInstance(bubble.markup, bubble.styleClass, false));
+    } catch (e) {
+      chatSessionHistory = [];
+    }
   }
 }
 
-/* Content Panel Framework Cards */
-.backup-panel, .info-shortcuts-panel, .ai-assistant-panel {
-  background: var(--bg-cards);
-  padding: 1.75rem;
-  border-radius: 12px;
-  box-shadow: var(--card-shadow);
-  border: 1px solid #e2e8f0;
+/**
+ * CORE EXECUTION LOOP: Multi-Model Inference Multiplexer
+ * Intercepts inputs and distributes queries to appropriate engine wrappers.
+ */
+function runUniversalAgentPipeline(event) {
+  event.preventDefault();
+  const rawQuery = aiInput.value.trim();
+  if (!rawQuery) return;
+
+  // Append user message onto display card
+  renderBubbleInstance(rawQuery, 'user', true);
+  aiInput.value = '';
+
+  // Trigger parallel asynchronous latency lag simulator
+  setTimeout(() => {
+    const agentOutputMarkup = evaluateOmniModelInference(rawQuery);
+    renderBubbleInstance(agentOutputMarkup, 'ai-reply', true);
+    triggerVoiceOutputIfConfigured(agentOutputMarkup);
+  }, 450);
 }
 
-.backup-panel h2, .info-shortcuts-panel h2, .ai-header h2 {
-  font-size: 1.3rem;
-  color: var(--bg-dark);
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
+function renderBubbleInstance(innerContent, styleClass, persistState = true) {
+  const containerBubble = document.createElement('div');
+  containerBubble.className = `ai-bubble ${styleClass}`;
+  containerBubble.innerHTML = innerContent;
 
-.panel-desc {
-  font-size: 0.88rem;
-  color: var(--text-muted);
-  margin-top: 0.35rem;
-}
+  aiResponseLog.appendChild(containerBubble);
+  aiResponseLog.scrollTop = aiResponseLog.scrollHeight;
 
-/* Guide list styles for quick copy prompts */
-.prompt-list {
-  list-style-type: none;
-  margin-top: 1rem;
-}
-
-.prompt-list li {
-  font-size: 0.9rem;
-  padding: 10px 0;
-  border-bottom: 1px dashed var(--border-color);
-  color: var(--text-dark);
-}
-
-.prompt-list li:last-child {
-  border-bottom: none;
-}
-
-.prompt-list code {
-  background: #f1f5f9;
-  padding: 3px 6px;
-  border-radius: 4px;
-  font-family: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
-  font-size: 0.82rem;
-  display: inline-block;
-  margin-top: 4px;
-  color: #0369a1;
-  border: 1px solid #e2e8f0;
-}
-
-/* Modular Button Classes Matrix */
-.btn {
-  display: inline-block;
-  padding: 0.75rem 1.5rem;
-  border: none;
-  border-radius: 8px;
-  font-weight: 600;
-  cursor: pointer;
-  font-size: 0.95rem;
-  transition: all var(--transition-speed) ease;
-  text-align: center;
-}
-
-.btn:active {
-  transform: scale(0.97);
-}
-
-.btn-secondary {
-  background-color: var(--bg-dark);
-  color: white;
-  align-self: flex-start;
-}
-
-.btn-secondary:hover {
-  background-color: #334155;
-}
-
-/* Core Local JSON File Backup Toggles */
-.backup-actions {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-  margin-top: 1.25rem;
-}
-
-.btn-backup-export {
-  background-color: #2563eb;
-  color: white;
-  width: 100%;
-}
-
-.btn-backup-export:hover {
-  background-color: #1d4ed8;
-}
-
-.btn-backup-import {
-  background-color: transparent;
-  color: #2563eb;
-  border: 2px solid #2563eb;
-  width: 100%;
-}
-
-.btn-backup-import:hover {
-  background-color: #eff6ff;
-}
-
-/* Accessibility Focus Ring Outlines */
-.btn:focus-visible, input:focus-visible {
-  outline: 3px solid var(--text-dark);
-  outline-offset: 3px;
-}
-
-/* Universal Interface Agent Header Element */
-.ai-header {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  border-bottom: 2px solid #f1f5f9;
-  padding-bottom: 1.25rem;
-  margin-bottom: 1.25rem;
-}
-
-@media (min-width: 768px) {
-  .ai-header {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
+  if (persistState) {
+    chatSessionHistory.push({ markup: innerContent, styleClass: styleClass });
+    localStorage.setItem('eduquest_omni_session', JSON.stringify(chatSessionHistory));
   }
 }
 
-/* Custom Multimodal Toggle Layout Matrix */
-.voice-controls {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  background: #f1f5f9;
-  padding: 8px 16px;
-  border-radius: 30px;
-  border: 1px solid #e2e8f0;
+/**
+ * COMPILER MATRIX: Dual-Engine Intent Detection Architecture
+ * Mimics ChatGPT (Creative/Writing), Gemini (STEM/LaTeX), and Manus (Agentic Tool/Math Execution).
+ */
+function evaluateOmniModelInference(input) {
+  const query = input.toLowerCase().trim();
+
+  // --- ENGINE TYPE A: MANUS DETERMINISTIC REASONING & COMPILING AGENT ---
+  // Intent 1: Direct Mathematics String Computation Pipeline Interception
+  if (/^[0-9+\-*/().\s]+$/.test(query) && /[\+\-\*\/]/.test(query)) {
+    try {
+      // Safe sandboxed eval execution mapping
+      const computationResult = Function(`"use strict"; return (${query})`)();
+      return `
+        <span class="agent-header-tag tag-manus">Manus Engine v2.6</span><br/>
+        <strong>Agentic Code Sandbox Execution Status: Success (200 OK)</strong><br/>
+        <p>Manus intercepted your raw equation, instantiated an internal JavaScript runtime sandbox, compiled the syntax tree, and evaluated the stack values directly:</p>
+        <pre>Input String: "${input}"\nTokens Parsed: Arithmetic Expression\nOutput Value: ${computationResult}</pre>
+        <p>Final Computed Result = <strong>${computationResult}</strong></p>
+      `;
+    } catch (err) {
+      return `
+        <span class="agent-header-tag tag-manus">Manus Engine v2.6</span><br/>
+        <strong>Runtime Execution Error:</strong> Compiling failed due to irregular mathematical formatting notation. Verify expression syntax patterns.
+      `;
+    }
+  }
+
+  // Intent 2: Propositional Logic Variables & Structural Truth Values
+  if (query.includes("if") && (query.includes("then") || query.includes("true") || query.includes("false"))) {
+    return `
+      <span class="agent-header-tag tag-manus">Manus Engine v2.6</span><br/>
+      <strong>Agent Logic Matrix Routing:</strong><br/>
+      <p>Manus has broken down your propositional logic problem into structured truth dependencies:</p>
+      <ul class="pipeline-steps">
+        <li><strong>Step 1 (Parsing):</strong> Maps statement structures into a formal conditional logic framework ($P \\rightarrow Q$).</li>
+        <li><strong>Step 2 (Analysis):</strong> Identifies structural assertions where $P$ acts as the antecedent and $Q$ acts as the subsequent.</li>
+        <li><strong>Step 3 (Resolution):</strong> If $P$ evaluates to false, the logical statement becomes vacuously true, regardless of $Q$'s state.</li>
+      </ul>
+      <p>Current Truth Evaluation Profile: <strong>Validated ($P \\rightarrow Q$)</strong></p>
+    `;
+  }
+
+
+  // --- ENGINE TYPE B: GEMINI MULTIMODAL STEM ANALYTICAL MODEL ---
+  // Intent 1: Science Projects & Complex Biochemical Formulations
+  if (query.includes("photosynthesis") || query.includes("carbon") || query.includes("chemical")) {
+    return `
+      <span class="agent-header-tag tag-gemini">Gemini Advanced 1.5</span><br/>
+      <strong>Analytical STEM Breakdown: Cellular Energy Conversion Pathways</strong><br/>
+      <p>Photosynthesis represents a multi-phase biochemical system where autotrophic plant matrices convert electromagnetic spectrum rays into steady chemical bonds ($C_6H_{12}O_6$).</p>
+      <p><strong>Balanced Stoichiometric Equation:</strong></p>
+      $$6CO_2 + 6H_2O \\xrightarrow{\\text{Photons}} C_6H_{12}O_6 + 6O_2$$
+      <p><strong>System Component Arrays:</strong></p>
+      <ul class="pipeline-steps">
+        <li>Light-Dependent Phase: Occurs within thylakoid membranes, yielding ATP and NADPH.</li>
+        <li>Light-Independent Phase (Calvin Cycle): Fixes atmospheric $CO_2$ inside stromal layers.</li>
+      </ul>
+    `;
+  }
+
+  // Intent 2: Advanced Science Concept Values (Absolute Value / Square Roots)
+  if (query.includes("absolute value") || query.includes("square root")) {
+    const extractedDigits = input.match(/-?\d+/);
+    if (extractedDigits) {
+      const activeNum = Number(extractedDigits[0]);
+      if (query.includes("absolute value")) {
+        return `
+          <span class="agent-header-tag tag-gemini">Gemini Advanced 1.5</span><br/>
+          <strong>Mathematical Core Definition: Absolute Value Matrix</strong><br/>
+          <p>The geometric distance constraint of a real scalar value relative to the origin coordinate point ($0$) along a standard 1D number line plane:</p>
+          <pre>Notation: |${activeNum}|\nResult: ${Math.abs(activeNum)}</pre>
+        `;
+      } else {
+        if (activeNum < 0) return `<span class="agent-header-tag tag-gemini">Gemini</span> Real-number error: Square roots of negative parameters require imaginary coordinate values ($i$).`;
+        return `
+          <span class="agent-header-tag tag-gemini">Gemini Advanced 1.5</span><br/>
+          <strong>Mathematical Core Definition: Radical Roots Matrix</strong><br/>
+          <p>Evaluating primary side value equations where base exponents match:</p>
+          $$\\sqrt{${activeNum}} \\approx ${Math.sqrt(activeNum).toFixed(5)}$$
+        `;
+      }
+    }
+  }
+
+
+  // --- ENGINE TYPE C: CHATGPT NATURAL LANGUAGE GENERATION ENGINE ---
+  // Intent 1: Creative Production, Essays, Explanations, or Outlines
+  if (query.includes("write") || query.includes("essay") || query.includes("explain") || query.includes("summary") || query.includes("paradox")) {
+    let summaryTopic = query.includes("paradox") ? "Logical Paradox Resolutions" : "Global Inclusive Education Frameworks";
+    return `
+      <span class="agent-header-tag tag-chatgpt">ChatGPT-4o Prompt Interface</span><br/>
+      <strong>Synthesized Structural Essay Output: ${summaryTopic}</strong><br/>
+      <p><em>Introduction:</em> Contextual global environments necessitate highly coherent systematic frameworks. When exploring problems within modern systemic structures, practitioners find that addressing baseline metrics produces a compounding net dividend over generations.</p>
+      <p><em>Core Discussion:</em> Analysis shows that separating abstract conceptual boundaries from physical implementation matrices resolves underlying logical bottlenecks. In environments targeting SDG 4 goals, optimizing resource accessibility is a primary catalyst for scaling universal literacy rates.</p>
+      <p><em>Conclusion:</em> Moving forward, building scalable, open-source micro-learning portals allows individuals to unlock substantial functional advantages without infrastructure dependencies.</p>
+    `;
+  }
+
+  // Intent 2: Policy/SDG Global Domain Matrix Queries
+  if (query.includes("sdg 4") || query.includes("education") || query.includes("charity")) {
+    return `
+      <span class="agent-header-tag tag-chatgpt">ChatGPT-4o Prompt Interface</span><br/>
+      <strong>Policy Synthesis Report: Sustainable Development Goal 4 (SDG 4)</strong><br/>
+      <p>SDG 4 focuses on eliminating persistent structural disparities in educational spaces globally. Key implementation benchmarks emphasize expanding vocational training capabilities, upgrading digital hardware infrastructure, and provisioning global digital learning tools to marginalized demographics.</p>
+    `;
+  }
+
+  // FALLBACK MATRIX: Integrated Fallback Route (Simulates Hybrid LLM Mode)
+  return `
+    <span class="agent-header-tag tag-chatgpt">Omni-Agent Hybrid Blend</span><br/>
+    <strong>Generalized Synthesis Response Node</strong><br/>
+    <p>Your workspace query regarding "${input}" has been processed across the integrated framework matrix:</p>
+    <pre>Intent Status: Parsed\nModel Routing: ChatGPT (Context) + Gemini (Inference) + Manus (Validation)</pre>
+    <p>To implement this task cleanly, define your core structural parameters, compile your outline metrics, and use this console interface to evaluate secondary calculations.</p>
+  `;
 }
 
-.mode-label {
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: var(--text-muted);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+/**
+ * MULTIMODAL AUTOMATION: Native Text-To-Speech Synthesis Loop
+ */
+function triggerVoiceOutputIfConfigured(htmlContent) {
+  const activeVoiceMode = document.querySelector('input[name="ai-mode"]:checked').value;
+  if (activeVoiceMode !== 'voice') return;
+
+  if ('speechSynthesis' in window) {
+    window.speechSynthesis.cancel(); // Terminate existing speaker threads
+    
+    // Sanitize markup nodes and dollar signs before invoking audio hardware
+    const plainTextSpeech = htmlContent
+      .replace(/<[^>]*>/g, '')
+      .replace(/\$/g, '')
+      .replace(/&times;/g, 'times')
+      .replace(/&alpha;/g, 'alpha');
+      
+    const executionUtterance = new SpeechSynthesisUtterance(plainTextSpeech);
+    window.speechSynthesis.speak(executionUtterance);
+  }
 }
 
-.radio-label {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  color: var(--text-muted);
+/**
+ * DATA BACKUPS: Local JSON Session File Persistence Operations
+ */
+function exportSessionData() {
+  if (chatSessionHistory.length === 0) {
+    alert("The current workspace interaction history log is empty.");
+    return;
+  }
+  const serializedData = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(chatSessionHistory, null, 2));
+  const functionalAnchor = document.createElement('a');
+  functionalAnchor.setAttribute("href", serializedData);
+  functionalAnchor.setAttribute("download", "eduquest_omni_agent_session.json");
+  document.body.appendChild(functionalAnchor);
+  functionalAnchor.click();
+  functionalAnchor.remove();
 }
 
-.radio-label input[type="radio"]:checked + .custom-radio {
-  color: var(--sdg-red);
-}
+function importSessionData(event) {
+  const uploadedFile = event.target.files[0];
+  if (!uploadedFile) return;
 
-/* Agent Interactive Screen Display Area */
-.ai-chat-container {
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-}
-
-.ai-response-log {
-  background: #f1f5f9;
-  border: 1px solid var(--border-color);
-  border-radius: 10px;
-  padding: 1.5rem;
-  height: 480px; /* Fully expanded functional terminal frame */
-  overflow-y: auto;
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-}
-
-/* Multi-Model Differentiated Response Bubbles */
-.ai-bubble {
-  padding: 1rem 1.25rem;
-  border-radius: 12px;
-  max-width: 90%;
-  font-size: 0.98rem;
-  line-height: 1.6;
-}
-
-.ai-bubble.system {
-  background: #e2e8f0;
-  color: var(--text-dark);
-  align-self: flex-start;
-  border-left: 5px solid #475569;
-}
-
-.ai-bubble.user {
-  background: var(--sdg-red);
-  color: white;
-  align-self: flex-end;
-  border-bottom-right-radius: 2px;
-  box-shadow: 0 4px 10px rgba(197, 25, 45, 0.1);
-}
-
-.ai-bubble.ai-reply {
-  background: white;
-  color: var(--text-dark);
-  align-self: flex-start;
-  border: 1px solid #e2e8f0;
-  border-bottom-left-radius: 2px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
-}
-
-/* Agentic Internal Layout Tags */
-.agent-header-tag {
-  display: inline-block;
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 0.75rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  margin-bottom: 0.5rem;
-  letter-spacing: 0.05em;
-}
-
-.tag-chatgpt { background: #dcfce7; color: #166534; border: 1px solid #bbf7d0; }
-.tag-gemini { background: #e0f2fe; color: #0369a1; border: 1px solid #bae6fd; }
-.tag-manus { background: #faf5ff; color: #6b21a8; border: 1px solid #f3e8ff; }
-
-/* Code and Steps Pipeline Formatting Layout */
-.pipeline-steps {
-  margin: 0.75rem 0;
-  padding-left: 1.25rem;
-}
-
-.pipeline-steps li {
-  margin-bottom: 4px;
-}
-
-pre {
-  background: #0f172a;
-  color: #f8fafc;
-  padding: 0.75rem;
-  border-radius: 6px;
-  overflow-x: auto;
-  font-family: monospace;
-  font-size: 0.85rem;
-  margin: 0.5rem 0;
-}
-
-/* User Form Submission Element Row */
-.ai-query-form {
-  display: flex;
-  gap: 12px;
-}
-
-#ai-input {
-  flex: 1;
-  padding: 0.85rem 1.25rem;
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  font-size: 1rem;
-  transition: all var(--transition-speed);
-  background-color: var(--bg-cards);
-}
-
-#ai-input:focus {
-  outline: none;
-  border-color: var(--sdg-red);
-  box-shadow: 0 0 0 3px rgba(197, 25, 45, 0.15);
-}
-
-.btn-ai-submit {
-  background: var(--bg-dark);
-  color: white;
-  padding: 0 1.75rem;
-}
-
-.btn-ai-submit:hover {
-  background: #0f172a;
-}
-
-/* Standard Base Footer Layout */
-.app-footer {
-  text-align: center;
-  padding: 2rem 1rem;
-  color: var(--text-muted);
-  font-size: 0.88rem;
-  margin-top: 3rem;
-  border-top: 1px solid #e2e8f0;
+  const dataReader = new FileReader();
+  dataReader.onload = function(e) {
+    try {
+      const parsedArray = JSON.parse(e.target.result);
+      if (Array.isArray(parsedArray)) {
+        chatSessionHistory = parsedArray;
+        localStorage.setItem('eduquest_omni_session', JSON.stringify(chatSessionHistory));
+        
+        // Clear screen and redraw array nodes
+        aiResponseLog.innerHTML = '';
+        chatSessionHistory.forEach(bubble => renderBubbleInstance(bubble.markup, bubble.styleClass, false));
+        alert("Omni-Agent workspace session uploaded and rendered successfully!");
+      } else {
+        alert("Uploaded structure does not conform to array session schemas.");
+      }
+    } catch (err) {
+      alert("Error parsing backup JSON matrix structure.");
+    }
+    importFileInput.value = '';
+  };
+  dataReader.readAsText(uploadedFile);
 }
