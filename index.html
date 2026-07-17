@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>EduQuest - SDG 4 AI Workspace</title>
+  <title>EduQuest - SDG 4 Universal AI Workspace</title>
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -13,26 +13,26 @@
         <span class="sdg-badge">4</span>
         <h1>EduQuest Workspace</h1>
       </div>
-      <p class="tagline">Inclusive, Quality Education Powered by AI</p>
+      <p class="tagline">Multimodal Agentic Copilot Framework for SDG 4</p>
     </div>
   </header>
 
   <main class="app-container">
-    <!-- SDG 4 Info Tracker Panel -->
+    <!-- SDG 4 Universal Target Matrix Banner -->
     <section class="sdg-info-card">
-      <h2>SDG 4 Spotlight: What are we solving?</h2>
-      <p id="sdg-fact" aria-live="polite">Loading a key SDG 4 target...</p>
-      <button id="next-fact-btn" class="btn btn-secondary">Next Target</button>
+      <h2>SDG 4 Target Tracker Matrix</h2>
+      <p id="sdg-fact" aria-live="polite">Loading localized educational target benchmark...</p>
+      <button id="next-fact-btn" class="btn btn-secondary">Cycle Target</button>
     </section>
 
-    <!-- App Interactive Workspace Grid -->
+    <!-- App Main Interactive Grid -->
     <div class="workspace">
       
       <!-- Left Column: Settings, Operations, and Local Data Actions -->
       <div class="sidebar-column">
         <section class="backup-panel">
-          <h2>Workspace Sessions</h2>
-          <p class="panel-desc">Save your current AI interaction logs locally or restore an older session.</p>
+          <h2>Agent Workspace Sessions</h2>
+          <p class="panel-desc">Export historical prompt tokens or upload a JSON backup snapshot file.</p>
           <div class="backup-actions">
             <button id="export-btn" class="btn btn-backup-export">Export Session (JSON)</button>
             <label for="import-file" class="btn btn-backup-import">Import Session File</label>
@@ -41,48 +41,53 @@
         </section>
 
         <section class="info-shortcuts-panel">
-          <h2>Quick Prompts to Try</h2>
+          <h2>Omni-Agent Inputs to Test</h2>
           <ul class="prompt-list">
-            <li><code>45 * 12 / 3</code> (Math computation)</li>
-            <li><code>Explain photosynthesis</code> (Science homework)</li>
-            <li><code>What is absolute value of -42?</code> (Math concepts)</li>
-            <li><code>What is a logical paradox?</code> (Critical thinking)</li>
+            <li><strong>Manus Math Exec:</strong> <code>((34 + 6) * 5) / 2</code></li>
+            <li><strong>ChatGPT Creative:</strong> <code>write an essay on education</code></li>
+            <li><strong>Gemini STEM Analysis:</strong> <code>explain photosynthesis</code></li>
+            <li><strong>Manus Logic Sandbox:</strong> <code>if P is true then Q is false</code></li>
           </ul>
         </section>
       </div>
 
-      <!-- Right Column: Primary AI Homework & Copilot Assistant Console -->
+      <!-- Right Column: Primary Advanced AI Workspace Console -->
       <section class="ai-assistant-panel">
         <div class="ai-header">
           <div class="ai-title-block">
-            <h2>EduQuest AI Academic Assistant</h2>
-            <p class="panel-desc">Submit real-world challenges, math, logic, or homework questions below.</p>
+            <h2>EduQuest Universal AI Assistant</h2>
+            <p class="panel-desc">Conversational Synthesis (ChatGPT), Analytical STEM (Gemini), and Agentic Code/Math Execution (Manus).</p>
           </div>
           
-          <!-- Voice Automation Controller Matrix -->
+          <!-- Automated Multimodal Configuration Controls -->
           <div class="voice-controls" role="group" aria-label="Output Mode Options">
-            <span class="mode-label">Output Mode:</span>
+            <span class="mode-label">Output Link:</span>
             <label class="radio-label">
               <input type="radio" name="ai-mode" value="text" checked />
               <span class="custom-radio">Text Only</span>
             </label>
             <label class="radio-label">
               <input type="radio" name="ai-mode" value="voice" />
-              <span class="custom-radio">Voice Automated 🔊</span>
+              <span class="custom-radio">Voice Synthesis 🔊</span>
             </label>
           </div>
         </div>
 
+        <!-- Conversational Interface Log Screen -->
         <div class="ai-chat-container">
           <div id="ai-response-log" class="ai-response-log" aria-live="polite">
             <div class="ai-bubble system">
-              Hello! I am your native academic co-pilot. Drop any real-world dilemma, homework project, math calculation, or logical query right below. I can talk back if you switch to Voice mode!
+              <strong>System Boot Success: Universal Omni-Agent Model Loaded.</strong><br/>
+              Ready to process queries across three core operational architectures:<br/>
+              • <strong>ChatGPT Mode:</strong> Fluid prose generation and open-ended text summaries.<br/>
+              • <strong>Gemini Mode:</strong> Multi-layered STEM parsing, definitions, and LaTeX equation rendering.<br/>
+              • <strong>Manus Mode:</strong> Algorithmic logic evaluations, deterministic math code compilation, and structured pipeline steps.
             </div>
           </div>
           
           <form id="ai-query-form" class="ai-query-form">
-            <input type="text" id="ai-input" placeholder="Ask anything..." required autocomplete="off" />
-            <button type="submit" class="btn btn-ai-submit">Analyze Query</button>
+            <input type="text" id="ai-input" placeholder="Enter natural language query, math logic, or procedural task..." required autocomplete="off" />
+            <button type="submit" class="btn btn-ai-submit">Run Agent Pipeline</button>
           </form>
         </div>
       </section>
@@ -90,7 +95,7 @@
   </main>
 
   <footer class="app-footer">
-    <p>EduQuest App • Built in support of United Nations Sustainable Development Goal 4</p>
+    <p>EduQuest App Framework • Optimizing Educational Inclusivity under SDG 4 Principles</p>
   </footer>
 
   <script src="script.js"></script>
