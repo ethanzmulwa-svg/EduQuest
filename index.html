@@ -1,1 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>EduQuest - SDG 4 AI Workspace</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="header-container">
+      <div class="logo">
+        <span class="sdg-badge">4</span>
+        <h1>EduQuest Workspace</h1>
+      </div>
+      <p class="tagline">Inclusive, Quality Education Powered by AI</p>
+    </div>
+  </header>
 
+  <main class="app-container">
+    <!-- SDG 4 Info Tracker Panel -->
+    <section class="sdg-info-card">
+      <h2>SDG 4 Spotlight: What are we solving?</h2>
+      <p id="sdg-fact" aria-live="polite">Loading a key SDG 4 target...</p>
+      <button id="next-fact-btn" class="btn btn-secondary">Next Target</button>
+    </section>
+
+    <!-- App Interactive Workspace Grid -->
+    <div class="workspace">
+      
+      <!-- Left Column: Settings, Operations, and Local Data Actions -->
+      <div class="sidebar-column">
+        <section class="backup-panel">
+          <h2>Workspace Sessions</h2>
+          <p class="panel-desc">Save your current AI interaction logs locally or restore an older session.</p>
+          <div class="backup-actions">
+            <button id="export-btn" class="btn btn-backup-export">Export Session (JSON)</button>
+            <label for="import-file" class="btn btn-backup-import">Import Session File</label>
+            <input type="file" id="import-file" accept=".json" style="display: none;" />
+          </div>
+        </section>
+
+        <section class="info-shortcuts-panel">
+          <h2>Quick Prompts to Try</h2>
+          <ul class="prompt-list">
+            <li><code>45 * 12 / 3</code> (Math computation)</li>
+            <li><code>Explain photosynthesis</code> (Science homework)</li>
+            <li><code>What is absolute value of -42?</code> (Math concepts)</li>
+            <li><code>What is a logical paradox?</code> (Critical thinking)</li>
+          </ul>
+        </section>
+      </div>
+
+      <!-- Right Column: Primary AI Homework & Copilot Assistant Console -->
+      <section class="ai-assistant-panel">
+        <div class="ai-header">
+          <div class="ai-title-block">
+            <h2>EduQuest AI Academic Assistant</h2>
+            <p class="panel-desc">Submit real-world challenges, math, logic, or homework questions below.</p>
+          </div>
+          
+          <!-- Voice Automation Controller Matrix -->
+          <div class="voice-controls" role="group" aria-label="Output Mode Options">
+            <span class="mode-label">Output Mode:</span>
+            <label class="radio-label">
+              <input type="radio" name="ai-mode" value="text" checked />
+              <span class="custom-radio">Text Only</span>
+            </label>
+            <label class="radio-label">
+              <input type="radio" name="ai-mode" value="voice" />
+              <span class="custom-radio">Voice Automated 🔊</span>
+            </label>
+          </div>
+        </div>
+
+        <div class="ai-chat-container">
+          <div id="ai-response-log" class="ai-response-log" aria-live="polite">
+            <div class="ai-bubble system">
+              Hello! I am your native academic co-pilot. Drop any real-world dilemma, homework project, math calculation, or logical query right below. I can talk back if you switch to Voice mode!
+            </div>
+          </div>
+          
+          <form id="ai-query-form" class="ai-query-form">
+            <input type="text" id="ai-input" placeholder="Ask anything..." required autocomplete="off" />
+            <button type="submit" class="btn btn-ai-submit">Analyze Query</button>
+          </form>
+        </div>
+      </section>
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <p>EduQuest App • Built in support of United Nations Sustainable Development Goal 4</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
