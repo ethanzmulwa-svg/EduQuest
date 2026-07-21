@@ -1,7 +1,7 @@
 document.addEventListener('DOMContentLoaded', () => {
-  // 🔑 OPTIONAL: Paste your free Gemini API key below for live AI answers to ALL subjects & real-world problems!
-  // Get one for free at: https://aistudio.google.com/
-  const GEMINI_API_KEY = "";
+  // 🔑 Get a free API key at: https://aistudio.google.com/
+  // Paste your key inside the quotes below:
+  const GEMINI_API_KEY = "YOUR_GEMINI_API_KEY_HERE";
 
   // --- SDG 4 Target Matrix Data ---
   const sdgTargets = [
@@ -169,9 +169,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const isMentalHealth = checkMentalHealthIntent(trimmedInput);
 
     // 3. ROUTE TO UNIVERSAL AI AGENT (Gemini API or Dynamic Fallback)
-    const loadingBubble = appendMessage('EduQuest AI', '<em>Analyzing query and synthesizing context-specific guidance...</em>', 'agent-gemini');
+    const loadingBubble = appendMessage('EduQuest AI', '<em>Analyzing query and synthesizing live AI guidance...</em>', 'agent-gemini');
 
-    if (GEMINI_API_KEY) {
+    if (GEMINI_API_KEY && GEMINI_API_KEY !== "YOUR_GEMINI_API_KEY_HERE") {
       try {
         let systemPrompt = "";
         
@@ -187,12 +187,13 @@ document.addEventListener('DOMContentLoaded', () => {
           systemPrompt = `You are EduQuest AI, a universal problem solver and tutor supporting SDG 4 Quality Education.\n` +
             `User Query: "${trimmedInput}"\n\n` +
             `INSTRUCTIONS:\n` +
-            `- Provide SPECIFIC, highly relevant answers and suggestions directly answering what was asked (avoid generic fillers).\n` +
+            `- Provide SPECIFIC, highly relevant answers and suggestions directly answering what was asked.\n` +
             `- For calculations or math word problems: Show explicit step-by-step working before giving the final answer.\n` +
             `- For real-world issues (climate, policy, personal productivity, career, etc.): Break down practical solutions and actionable steps.\n` +
             `- Format cleanly using standard HTML markup (<h3>, <p>, <ul>, <li>, <code>).`;
         }
 
+        // Calling the Gemini API endpoint
         const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -202,15 +203,21 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         const data = await response.json();
-        const aiAnswer = data.candidates?.[0]?.content?.parts?.[0]?.text || "Unable to retrieve response.";
+        
+        if (data.error) {
+          loadingBubble.innerHTML = `<strong>System Notice:</strong> Gemini API Error: ${escapeHTML(data.error.message)}`;
+          return;
+        }
+
+        const aiAnswer = data.candidates?.[0]?.content?.parts?.[0]?.text || "Unable to retrieve a response from Gemini.";
         
         loadingBubble.innerHTML = `<strong>${isMentalHealth ? 'EduQuest Support Agent' : 'EduQuest Universal Agent'}:</strong><br/>${aiAnswer}`;
         if (voiceMode) speakText(aiAnswer);
       } catch (err) {
-        loadingBubble.innerHTML = `<strong>System Notice:</strong> Connection error. Unable to reach live AI endpoint.`;
+        loadingBubble.innerHTML = `<strong>System Notice:</strong> Connection error. Unable to reach live Gemini endpoint.`;
       }
     } else {
-      // Offline / Local Dynamic Fallback
+      // Offline / Local Dynamic Fallback (if key is empty or placeholder)
       setTimeout(() => {
         let content = "";
         let agentName = "EduQuest Universal Agent";
@@ -225,7 +232,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     `<li><strong>Grounding practice:</strong> Try the 5-4-3-2-1 technique (notice 5 things you see, 4 you feel, 3 you hear, 2 you smell, 1 you taste).</li>` +
                     `<li><strong>Reach out:</strong> Consider speaking with a trusted friend, counselor, or health professional.</li>` +
                     `</ul>` +
-                    `<p><small><em>Note: For full real-time conversations, insert a free Gemini API key into script.js.</em></small></p>`;
+                    `<p><small><em>Tip: Replace <code>YOUR_GEMINI_API_KEY_HERE</code> at the top of <code>script.js</code> with your actual key for live answers!</em></small></p>`;
         } else {
           content = `<h3>Real-World Solution & Analysis</h3>` +
                     `<p>Here is a breakdown for your query regarding <strong>"${escapeHTML(trimmedInput)}"</strong>:</p>` +
@@ -233,7 +240,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     `<li><strong>Key Challenge:</strong> Identifying core constraints and objectives.</li>` +
                     `<li><strong>Recommended Solution:</strong> Apply systematic problem-solving steps tailored to this specific scenario.</li>` +
                     `</ul>` +
-                    `<p><small><em>Tip: Add a free Gemini API key to <code>script.js</code> for instant live answers to real-world questions!</em></small></p>`;
+                    `<p><small><em>Tip: Replace <code>YOUR_GEMINI_API_KEY_HERE</code> at the top of <code>script.js</code> with your key to unlock full live AI streaming!</em></small></p>`;
         }
 
         loadingBubble.innerHTML = `<strong>${agentName}:</strong><br/>${content}`;
