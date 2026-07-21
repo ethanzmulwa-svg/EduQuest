@@ -18,7 +18,7 @@
   </header>
 
   <main class="app-container">
-    <!-- SDG 4 Universal Target Matrix Banner -->
+    <!-- SDG 4 Universal Target Tracker Matrix Banner -->
     <section class="sdg-info-card">
       <h2>SDG 4 Target Tracker Matrix</h2>
       <p id="sdg-fact" aria-live="polite">Loading localized educational target benchmark...</p>
@@ -28,7 +28,7 @@
     <!-- App Main Interactive Grid -->
     <div class="workspace">
       
-      <!-- Left Column: Settings, Operations, and Local Data Actions -->
+      <!-- Left Column: Settings, Operations, and Shortcuts -->
       <div class="sidebar-column">
         <section class="backup-panel">
           <h2>Agent Workspace Sessions</h2>
@@ -41,12 +41,13 @@
         </section>
 
         <section class="info-shortcuts-panel">
-          <h2>Omni-Agent Inputs to Test</h2>
+          <h2>Quick Learning Shortcuts</h2>
+          <p class="panel-desc">Click or enter any topic to explore step-by-step solutions:</p>
           <ul class="prompt-list">
-            <li><strong>Manus Math Exec:</strong> <code>((34 + 6) * 5) / 2</code></li>
-            <li><strong>ChatGPT Creative:</strong> <code>write an essay on education</code></li>
-            <li><strong>Gemini STEM Analysis:</strong> <code>explain photosynthesis</code></li>
-            <li><strong>Manus Logic Sandbox:</strong> <code>if P is true then Q is false</code></li>
+            <li><strong>Step-by-Step Math:</strong> <code>((34 + 6) * 5) / 2</code></li>
+            <li><strong>Real-World Solutions:</strong> <code>How can a community reduce plastic waste?</code></li>
+            <li><strong>Mental Health Support:</strong> <code>Strategies to handle exam stress and burnout</code></li>
+            <li><strong>STEM & Science:</strong> <code>Explain the process of photosynthesis</code></li>
           </ul>
         </section>
       </div>
@@ -79,14 +80,14 @@
             <div class="ai-bubble system">
               <strong>System Boot Success: Universal Omni-Agent Model Loaded.</strong><br/>
               Ready to process queries across three core operational architectures:<br/>
-              • <strong>ChatGPT Mode:</strong> Fluid prose generation and open-ended text summaries.<br/>
-              • <strong>Gemini Mode:</strong> Multi-layered STEM parsing, definitions, and LaTeX equation rendering.<br/>
-              • <strong>Manus Mode:</strong> Algorithmic logic evaluations, deterministic math code compilation, and structured pipeline steps.
+              • <strong>ChatGPT Mode:</strong> Open-ended synthesis, essays, and general subject guidance.<br/>
+              • <strong>Gemini Mode:</strong> Analytical STEM parsing, science concepts, and real-world problem solving.<br/>
+              • <strong>Manus Mode:</strong> Deterministic step-by-step math execution with full working shown.
             </div>
           </div>
           
           <form id="ai-query-form" class="ai-query-form">
-            <input type="text" id="ai-input" placeholder="Enter natural language query, math logic, or procedural task..." required autocomplete="off" />
+            <input type="text" id="ai-input" placeholder="Enter natural language query, math calculation, or real-world problem..." required autocomplete="off" />
             <button type="submit" class="btn btn-ai-submit">Run Agent Pipeline</button>
           </form>
         </div>
