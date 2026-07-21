@@ -1,268 +1,305 @@
-/**
- * EduQuest AI Workspace - Advanced Model Simulation Matrix
- * Orchestrates localized pipelines mirroring ChatGPT, Gemini, and Manus operational profiles.
- */
-
-const sdgTargets = [
-  "Target 4.1: Free, equitable, and quality primary/secondary education pipelines globally.",
-  "Target 4.4: Substantially scale relevant technical, engineering, and vocational competencies.",
-  "Target 4.6: Ensure standard baseline youth literacy and universal logical mathematical mastery.",
-  "Target 4.a: Upgrade structural learning environments to fulfill safe, non-violent, inclusive spaces."
-];
-
-let chatSessionHistory = [];
-let targetMatrixIndex = 0;
-
-// Element Selectors
-const sdgFactText = document.getElementById('sdg-fact');
-const nextFactBtn = document.getElementById('next-fact-btn');
-const exportBtn = document.getElementById('export-btn');
-const importFileInput = document.getElementById('import-file');
-const aiQueryForm = document.getElementById('ai-query-form');
-const aiInput = document.getElementById('ai-input');
-const aiResponseLog = document.getElementById('ai-response-log');
-
 document.addEventListener('DOMContentLoaded', () => {
-  initializeWorkspace();
-  
-  nextFactBtn.addEventListener('click', () => {
-    targetMatrixIndex = (targetMatrixIndex + 1) % sdgTargets.length;
-    sdgFactText.textContent = sdgTargets[targetMatrixIndex];
-  });
+  // 🔑 OPTIONAL: Paste your free Gemini API key below for live AI answers to ALL subjects & real-world problems!
+  // Get one for free at: https://aistudio.google.com/
+  const GEMINI_API_KEY = "";
 
-  exportBtn.addEventListener('click', exportSessionData);
-  importFileInput.addEventListener('change', importSessionData);
-  aiQueryForm.addEventListener('submit', runUniversalAgentPipeline);
-});
+  // --- SDG 4 Target Matrix Data ---
+  const sdgTargets = [
+    "Target 4.1: Ensure all girls and boys complete free, equitable, and quality primary and secondary education.",
+    "Target 4.2: Ensure access to quality early childhood development, care, and pre-primary education.",
+    "Target 4.3: Ensure equal access for all women and men to affordable and quality technical, vocational, and tertiary education.",
+    "Target 4.4: Substantially increase the number of youth and adults with relevant skills for employment and entrepreneurship.",
+    "Target 4.5: Eliminate gender disparities in education and ensure equal access for vulnerable populations.",
+    "Target 4.6: Ensure that all youth and a substantial proportion of adults achieve literacy and numeracy.",
+    "Target 4.7: Ensure all learners acquire knowledge and skills needed to promote sustainable development."
+  ];
 
-function initializeWorkspace() {
-  sdgFactText.textContent = sdgTargets[0];
-  const storedSession = localStorage.getItem('eduquest_omni_session');
-  if (storedSession) {
-    try {
-      chatSessionHistory = JSON.parse(storedSession);
-      chatSessionHistory.forEach(bubble => renderBubbleInstance(bubble.markup, bubble.styleClass, false));
-    } catch (e) {
-      chatSessionHistory = [];
-    }
+  let currentFactIndex = 0;
+  const sdgFactElem = document.getElementById('sdg-fact');
+  const nextFactBtn = document.getElementById('next-fact-btn');
+
+  function updateSdgFact() {
+    if (sdgFactElem) sdgFactElem.textContent = sdgTargets[currentFactIndex];
   }
-}
+  updateSdgFact();
 
-/**
- * CORE EXECUTION LOOP: Multi-Model Inference Multiplexer
- * Intercepts inputs and distributes queries to appropriate engine wrappers.
- */
-function runUniversalAgentPipeline(event) {
-  event.preventDefault();
-  const rawQuery = aiInput.value.trim();
-  if (!rawQuery) return;
-
-  // Append user message onto display card
-  renderBubbleInstance(rawQuery, 'user', true);
-  aiInput.value = '';
-
-  // Trigger parallel asynchronous latency lag simulator
-  setTimeout(() => {
-    const agentOutputMarkup = evaluateOmniModelInference(rawQuery);
-    renderBubbleInstance(agentOutputMarkup, 'ai-reply', true);
-    triggerVoiceOutputIfConfigured(agentOutputMarkup);
-  }, 450);
-}
-
-function renderBubbleInstance(innerContent, styleClass, persistState = true) {
-  const containerBubble = document.createElement('div');
-  containerBubble.className = `ai-bubble ${styleClass}`;
-  containerBubble.innerHTML = innerContent;
-
-  aiResponseLog.appendChild(containerBubble);
-  aiResponseLog.scrollTop = aiResponseLog.scrollHeight;
-
-  if (persistState) {
-    chatSessionHistory.push({ markup: innerContent, styleClass: styleClass });
-    localStorage.setItem('eduquest_omni_session', JSON.stringify(chatSessionHistory));
+  if (nextFactBtn) {
+    nextFactBtn.addEventListener('click', () => {
+      currentFactIndex = (currentFactIndex + 1) % sdgTargets.length;
+      updateSdgFact();
+    });
   }
-}
 
-/**
- * COMPILER MATRIX: Dual-Engine Intent Detection Architecture
- * Mimics ChatGPT (Creative/Writing), Gemini (STEM/LaTeX), and Manus (Agentic Tool/Math Execution).
- */
-function evaluateOmniModelInference(input) {
-  const query = input.toLowerCase().trim();
-
-  // --- ENGINE TYPE A: MANUS DETERMINISTIC REASONING & COMPILING AGENT ---
-  // Intent 1: Direct Mathematics String Computation Pipeline Interception
-  if (/^[0-9+\-*/().\s]+$/.test(query) && /[\+\-\*\/]/.test(query)) {
-    try {
-      // Safe sandboxed eval execution mapping
-      const computationResult = Function(`"use strict"; return (${query})`)();
-      return `
-        <span class="agent-header-tag tag-manus">Manus Engine v2.6</span><br/>
-        <strong>Agentic Code Sandbox Execution Status: Success (200 OK)</strong><br/>
-        <p>Manus intercepted your raw equation, instantiated an internal JavaScript runtime sandbox, compiled the syntax tree, and evaluated the stack values directly:</p>
-        <pre>Input String: "${input}"\nTokens Parsed: Arithmetic Expression\nOutput Value: ${computationResult}</pre>
-        <p>Final Computed Result = <strong>${computationResult}</strong></p>
-      `;
-    } catch (err) {
-      return `
-        <span class="agent-header-tag tag-manus">Manus Engine v2.6</span><br/>
-        <strong>Runtime Execution Error:</strong> Compiling failed due to irregular mathematical formatting notation. Verify expression syntax patterns.
-      `;
+  // --- Voice Synthesis Engine ---
+  function speakText(text) {
+    if ('speechSynthesis' in window) {
+      window.speechSynthesis.cancel();
+      const cleanText = text.replace(/<[^>]*>?/gm, '');
+      const utterance = new SpeechSynthesisUtterance(cleanText);
+      utterance.rate = 1.0;
+      window.speechSynthesis.speak(utterance);
     }
   }
 
-  // Intent 2: Propositional Logic Variables & Structural Truth Values
-  if (query.includes("if") && (query.includes("then") || query.includes("true") || query.includes("false"))) {
-    return `
-      <span class="agent-header-tag tag-manus">Manus Engine v2.6</span><br/>
-      <strong>Agent Logic Matrix Routing:</strong><br/>
-      <p>Manus has broken down your propositional logic problem into structured truth dependencies:</p>
-      <ul class="pipeline-steps">
-        <li><strong>Step 1 (Parsing):</strong> Maps statement structures into a formal conditional logic framework ($P \\rightarrow Q$).</li>
-        <li><strong>Step 2 (Analysis):</strong> Identifies structural assertions where $P$ acts as the antecedent and $Q$ acts as the subsequent.</li>
-        <li><strong>Step 3 (Resolution):</strong> If $P$ evaluates to false, the logical statement becomes vacuously true, regardless of $Q$'s state.</li>
-      </ul>
-      <p>Current Truth Evaluation Profile: <strong>Validated ($P \\rightarrow Q$)</strong></p>
-    `;
-  }
+  // --- UI Helpers ---
+  const chatLog = document.getElementById('ai-response-log');
+  const queryForm = document.getElementById('ai-query-form');
+  const queryInput = document.getElementById('ai-input');
 
-
-  // --- ENGINE TYPE B: GEMINI MULTIMODAL STEM ANALYTICAL MODEL ---
-  // Intent 1: Science Projects & Complex Biochemical Formulations
-  if (query.includes("photosynthesis") || query.includes("carbon") || query.includes("chemical")) {
-    return `
-      <span class="agent-header-tag tag-gemini">Gemini Advanced 1.5</span><br/>
-      <strong>Analytical STEM Breakdown: Cellular Energy Conversion Pathways</strong><br/>
-      <p>Photosynthesis represents a multi-phase biochemical system where autotrophic plant matrices convert electromagnetic spectrum rays into steady chemical bonds ($C_6H_{12}O_6$).</p>
-      <p><strong>Balanced Stoichiometric Equation:</strong></p>
-      $$6CO_2 + 6H_2O \\xrightarrow{\\text{Photons}} C_6H_{12}O_6 + 6O_2$$
-      <p><strong>System Component Arrays:</strong></p>
-      <ul class="pipeline-steps">
-        <li>Light-Dependent Phase: Occurs within thylakoid membranes, yielding ATP and NADPH.</li>
-        <li>Light-Independent Phase (Calvin Cycle): Fixes atmospheric $CO_2$ inside stromal layers.</li>
-      </ul>
-    `;
-  }
-
-  // Intent 2: Advanced Science Concept Values (Absolute Value / Square Roots)
-  if (query.includes("absolute value") || query.includes("square root")) {
-    const extractedDigits = input.match(/-?\d+/);
-    if (extractedDigits) {
-      const activeNum = Number(extractedDigits[0]);
-      if (query.includes("absolute value")) {
-        return `
-          <span class="agent-header-tag tag-gemini">Gemini Advanced 1.5</span><br/>
-          <strong>Mathematical Core Definition: Absolute Value Matrix</strong><br/>
-          <p>The geometric distance constraint of a real scalar value relative to the origin coordinate point ($0$) along a standard 1D number line plane:</p>
-          <pre>Notation: |${activeNum}|\nResult: ${Math.abs(activeNum)}</pre>
-        `;
-      } else {
-        if (activeNum < 0) return `<span class="agent-header-tag tag-gemini">Gemini</span> Real-number error: Square roots of negative parameters require imaginary coordinate values ($i$).`;
-        return `
-          <span class="agent-header-tag tag-gemini">Gemini Advanced 1.5</span><br/>
-          <strong>Mathematical Core Definition: Radical Roots Matrix</strong><br/>
-          <p>Evaluating primary side value equations where base exponents match:</p>
-          $$\\sqrt{${activeNum}} \\approx ${Math.sqrt(activeNum).toFixed(5)}$$
-        `;
-      }
-    }
-  }
-
-
-  // --- ENGINE TYPE C: CHATGPT NATURAL LANGUAGE GENERATION ENGINE ---
-  // Intent 1: Creative Production, Essays, Explanations, or Outlines
-  if (query.includes("write") || query.includes("essay") || query.includes("explain") || query.includes("summary") || query.includes("paradox")) {
-    let summaryTopic = query.includes("paradox") ? "Logical Paradox Resolutions" : "Global Inclusive Education Frameworks";
-    return `
-      <span class="agent-header-tag tag-chatgpt">ChatGPT-4o Prompt Interface</span><br/>
-      <strong>Synthesized Structural Essay Output: ${summaryTopic}</strong><br/>
-      <p><em>Introduction:</em> Contextual global environments necessitate highly coherent systematic frameworks. When exploring problems within modern systemic structures, practitioners find that addressing baseline metrics produces a compounding net dividend over generations.</p>
-      <p><em>Core Discussion:</em> Analysis shows that separating abstract conceptual boundaries from physical implementation matrices resolves underlying logical bottlenecks. In environments targeting SDG 4 goals, optimizing resource accessibility is a primary catalyst for scaling universal literacy rates.</p>
-      <p><em>Conclusion:</em> Moving forward, building scalable, open-source micro-learning portals allows individuals to unlock substantial functional advantages without infrastructure dependencies.</p>
-    `;
-  }
-
-  // Intent 2: Policy/SDG Global Domain Matrix Queries
-  if (query.includes("sdg 4") || query.includes("education") || query.includes("charity")) {
-    return `
-      <span class="agent-header-tag tag-chatgpt">ChatGPT-4o Prompt Interface</span><br/>
-      <strong>Policy Synthesis Report: Sustainable Development Goal 4 (SDG 4)</strong><br/>
-      <p>SDG 4 focuses on eliminating persistent structural disparities in educational spaces globally. Key implementation benchmarks emphasize expanding vocational training capabilities, upgrading digital hardware infrastructure, and provisioning global digital learning tools to marginalized demographics.</p>
-    `;
-  }
-
-  // FALLBACK MATRIX: Integrated Fallback Route (Simulates Hybrid LLM Mode)
-  return `
-    <span class="agent-header-tag tag-chatgpt">Omni-Agent Hybrid Blend</span><br/>
-    <strong>Generalized Synthesis Response Node</strong><br/>
-    <p>Your workspace query regarding "${input}" has been processed across the integrated framework matrix:</p>
-    <pre>Intent Status: Parsed\nModel Routing: ChatGPT (Context) + Gemini (Inference) + Manus (Validation)</pre>
-    <p>To implement this task cleanly, define your core structural parameters, compile your outline metrics, and use this console interface to evaluate secondary calculations.</p>
-  `;
-}
-
-/**
- * MULTIMODAL AUTOMATION: Native Text-To-Speech Synthesis Loop
- */
-function triggerVoiceOutputIfConfigured(htmlContent) {
-  const activeVoiceMode = document.querySelector('input[name="ai-mode"]:checked').value;
-  if (activeVoiceMode !== 'voice') return;
-
-  if ('speechSynthesis' in window) {
-    window.speechSynthesis.cancel(); // Terminate existing speaker threads
+  function appendMessage(sender, content, type = 'user') {
+    const bubble = document.createElement('div');
+    bubble.className = `ai-bubble ${type}`;
     
-    // Sanitize markup nodes and dollar signs before invoking audio hardware
-    const plainTextSpeech = htmlContent
-      .replace(/<[^>]*>/g, '')
-      .replace(/\$/g, '')
-      .replace(/&times;/g, 'times')
-      .replace(/&alpha;/g, 'alpha');
-      
-    const executionUtterance = new SpeechSynthesisUtterance(plainTextSpeech);
-    window.speechSynthesis.speak(executionUtterance);
-  }
-}
-
-/**
- * DATA BACKUPS: Local JSON Session File Persistence Operations
- */
-function exportSessionData() {
-  if (chatSessionHistory.length === 0) {
-    alert("The current workspace interaction history log is empty.");
-    return;
-  }
-  const serializedData = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(chatSessionHistory, null, 2));
-  const functionalAnchor = document.createElement('a');
-  functionalAnchor.setAttribute("href", serializedData);
-  functionalAnchor.setAttribute("download", "eduquest_omni_agent_session.json");
-  document.body.appendChild(functionalAnchor);
-  functionalAnchor.click();
-  functionalAnchor.remove();
-}
-
-function importSessionData(event) {
-  const uploadedFile = event.target.files[0];
-  if (!uploadedFile) return;
-
-  const dataReader = new FileReader();
-  dataReader.onload = function(e) {
-    try {
-      const parsedArray = JSON.parse(e.target.result);
-      if (Array.isArray(parsedArray)) {
-        chatSessionHistory = parsedArray;
-        localStorage.setItem('eduquest_omni_session', JSON.stringify(chatSessionHistory));
-        
-        // Clear screen and redraw array nodes
-        aiResponseLog.innerHTML = '';
-        chatSessionHistory.forEach(bubble => renderBubbleInstance(bubble.markup, bubble.styleClass, false));
-        alert("Omni-Agent workspace session uploaded and rendered successfully!");
-      } else {
-        alert("Uploaded structure does not conform to array session schemas.");
-      }
-    } catch (err) {
-      alert("Error parsing backup JSON matrix structure.");
+    if (type === 'user') {
+      bubble.innerHTML = `<strong>You:</strong> ${escapeHTML(content)}`;
+    } else {
+      bubble.innerHTML = `<strong>${sender}:</strong> ${content}`;
     }
-    importFileInput.value = '';
-  };
-  dataReader.readAsText(uploadedFile);
-}
+
+    chatLog.appendChild(bubble);
+    chatLog.scrollTop = chatLog.scrollHeight;
+    return bubble;
+  }
+
+  function escapeHTML(str) {
+    return str.replace(/[&<>'"]/g, tag => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+    }[tag] || tag));
+  }
+
+  // --- MAKE PROMPT SHORTCUTS CLICKABLE ---
+  const promptList = document.querySelector('.prompt-list');
+  if (promptList) {
+    promptList.addEventListener('click', (e) => {
+      const codeTarget = e.target.closest('code');
+      if (codeTarget && queryInput) {
+        queryInput.value = codeTarget.textContent.trim();
+        queryInput.focus();
+      }
+    });
+  }
+
+  // --- LOCAL STEP-BY-STEP MATH SOLVER (Shows Working) ---
+  function solveMathWithSteps(expr) {
+    let current = expr.trim();
+    let steps = [];
+    let maxIterations = 10;
+    let iteration = 0;
+
+    while (iteration < maxIterations) {
+      iteration++;
+      
+      // Step 1: Parentheses
+      let parenMatch = current.match(/\(([^()]+)\)/);
+      if (parenMatch) {
+        let innerExpr = parenMatch[1];
+        let subVal = evalSimple(innerExpr);
+        if (subVal === null) break;
+        steps.push(`Evaluate expression inside brackets: <code>(${escapeHTML(innerExpr)})</code> = <code>${subVal}</code>`);
+        current = current.replace(parenMatch[0], subVal);
+        continue;
+      }
+
+      // Step 2: Multiplication and Division
+      let mdMatch = current.match(/(-?\d+(?:\.\d+)?)\s*([*\/])\s*(-?\d+(?:\.\d+)?)/);
+      if (mdMatch) {
+        let [full, n1, op, n2] = mdMatch;
+        let res = op === '*' ? parseFloat(n1) * parseFloat(n2) : parseFloat(n1) / parseFloat(n2);
+        steps.push(`Perform ${op === '*' ? 'multiplication' : 'division'}: <code>${full}</code> = <code>${res}</code>`);
+        current = current.replace(full, res);
+        continue;
+      }
+
+      // Step 3: Addition and Subtraction
+      let asMatch = current.match(/(-?\d+(?:\.\d+)?)\s*([\+-])\s*(-?\d+(?:\.\d+)?)/);
+      if (asMatch) {
+        let [full, n1, op, n2] = asMatch;
+        let res = op === '+' ? parseFloat(n1) + parseFloat(n2) : parseFloat(n1) - parseFloat(n2);
+        steps.push(`Perform ${op === '+' ? 'addition' : 'subtraction'}: <code>${full}</code> = <code>${res}</code>`);
+        current = current.replace(full, res);
+        continue;
+      }
+
+      break;
+    }
+
+    return { steps, finalResult: current };
+  }
+
+  function evalSimple(expr) {
+    try {
+      return Function(`"use strict"; return (${expr})`)();
+    } catch (e) {
+      return null;
+    }
+  }
+
+  // --- MENTAL HEALTH INTENT CHECKER ---
+  function checkMentalHealthIntent(input) {
+    const text = input.toLowerCase();
+    const mentalHealthKeywords = [
+      'anxiety', 'depressed', 'depression', 'stressed', 'stress', 'lonely', 
+      'overwhelmed', 'burnout', 'mental health', 'sad', 'panic attack', 'grief', 'self-care'
+    ];
+
+    return mentalHealthKeywords.some(keyword => text.includes(keyword));
+  }
+
+  // --- MAIN MULTI-SUBJECT & REAL-WORLD PIPELINE ---
+  async function processQuery(input) {
+    const trimmedInput = input.trim();
+    const voiceMode = document.querySelector('input[name="ai-mode"]:checked')?.value === 'voice';
+
+    // 1. PURE MATHEMATICAL EXPRESSION (e.g., ((34 + 6) * 5) / 2)
+    const isPureMath = /^[\d\s\+\-\*\/\(\)\.\^]+$/.test(trimmedInput);
+    if (isPureMath) {
+      const { steps, finalResult } = solveMathWithSteps(trimmedInput);
+
+      let stepOutput = `<div class="math-working">`;
+      stepOutput += `<p><strong>Step-by-Step Calculation Working:</strong></p><ol>`;
+      steps.forEach(step => stepOutput += `<li>${step}</li>`);
+      stepOutput += `</ol><p><strong>Final Answer:</strong> <code>${finalResult}</code></p></div>`;
+
+      appendMessage('Manus Exec Core', stepOutput, 'agent-manus');
+      if (voiceMode) speakText(`The calculated result is ${finalResult}`);
+      return;
+    }
+
+    // 2. DETECT MENTAL HEALTH / EMOTIONAL WELLBEING TOPICS
+    const isMentalHealth = checkMentalHealthIntent(trimmedInput);
+
+    // 3. ROUTE TO UNIVERSAL AI AGENT (Gemini API or Dynamic Fallback)
+    const loadingBubble = appendMessage('EduQuest AI', '<em>Analyzing query and synthesizing context-specific guidance...</em>', 'agent-gemini');
+
+    if (GEMINI_API_KEY) {
+      try {
+        let systemPrompt = "";
+        
+        if (isMentalHealth) {
+          systemPrompt = `You are EduQuest AI, a compassionate and supportive educational assistant.\n` +
+            `User Query: "${trimmedInput}"\n\n` +
+            `INSTRUCTIONS:\n` +
+            `- Respond with empathy, warmth, and validation.\n` +
+            `- Provide tailored, practical coping strategies and specific suggestions addressing the exact concern mentioned.\n` +
+            `- Clarify that you are an AI assistant and not a medical professional.\n` +
+            `- Format cleanly using standard HTML markup (<h3>, <p>, <ul>, <li>).`;
+        } else {
+          systemPrompt = `You are EduQuest AI, a universal problem solver and tutor supporting SDG 4 Quality Education.\n` +
+            `User Query: "${trimmedInput}"\n\n` +
+            `INSTRUCTIONS:\n` +
+            `- Provide SPECIFIC, highly relevant answers and suggestions directly answering what was asked (avoid generic fillers).\n` +
+            `- For calculations or math word problems: Show explicit step-by-step working before giving the final answer.\n` +
+            `- For real-world issues (climate, policy, personal productivity, career, etc.): Break down practical solutions and actionable steps.\n` +
+            `- Format cleanly using standard HTML markup (<h3>, <p>, <ul>, <li>, <code>).`;
+        }
+
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            contents: [{ parts: [{ text: systemPrompt }] }]
+          })
+        });
+
+        const data = await response.json();
+        const aiAnswer = data.candidates?.[0]?.content?.parts?.[0]?.text || "Unable to retrieve response.";
+        
+        loadingBubble.innerHTML = `<strong>${isMentalHealth ? 'EduQuest Support Agent' : 'EduQuest Universal Agent'}:</strong><br/>${aiAnswer}`;
+        if (voiceMode) speakText(aiAnswer);
+      } catch (err) {
+        loadingBubble.innerHTML = `<strong>System Notice:</strong> Connection error. Unable to reach live AI endpoint.`;
+      }
+    } else {
+      // Offline / Local Dynamic Fallback
+      setTimeout(() => {
+        let content = "";
+        let agentName = "EduQuest Universal Agent";
+
+        if (isMentalHealth) {
+          agentName = "EduQuest Wellbeing Assistant";
+          content = `<h3>Support & Guidance for "${escapeHTML(trimmedInput)}"</h3>` +
+                    `<p>Dealing with stress or mental pressure can feel heavy, but taking it step-by-step makes a big difference.</p>` +
+                    `<p><strong>Specific Actionable Suggestions:</strong></p>` +
+                    `<ul>` +
+                    `<li><strong>Break tasks down:</strong> Divide your current focus into tiny, 5-minute chunks to lower mental load.</li>` +
+                    `<li><strong>Grounding practice:</strong> Try the 5-4-3-2-1 technique (notice 5 things you see, 4 you feel, 3 you hear, 2 you smell, 1 you taste).</li>` +
+                    `<li><strong>Reach out:</strong> Consider speaking with a trusted friend, counselor, or health professional.</li>` +
+                    `</ul>` +
+                    `<p><small><em>Note: For full real-time conversations, insert a free Gemini API key into script.js.</em></small></p>`;
+        } else {
+          content = `<h3>Real-World Solution & Analysis</h3>` +
+                    `<p>Here is a breakdown for your query regarding <strong>"${escapeHTML(trimmedInput)}"</strong>:</p>` +
+                    `<ul>` +
+                    `<li><strong>Key Challenge:</strong> Identifying core constraints and objectives.</li>` +
+                    `<li><strong>Recommended Solution:</strong> Apply systematic problem-solving steps tailored to this specific scenario.</li>` +
+                    `</ul>` +
+                    `<p><small><em>Tip: Add a free Gemini API key to <code>script.js</code> for instant live answers to real-world questions!</em></small></p>`;
+        }
+
+        loadingBubble.innerHTML = `<strong>${agentName}:</strong><br/>${content}`;
+        if (voiceMode) speakText("Response processed.");
+      }, 400);
+    }
+  }
+
+  // --- Form Listener ---
+  if (queryForm) {
+    queryForm.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const userText = queryInput.value.trim();
+      if (!userText) return;
+
+      appendMessage('You', userText, 'user');
+      queryInput.value = '';
+
+      processQuery(userText);
+    });
+  }
+
+  // --- Session Export/Import ---
+  const exportBtn = document.getElementById('export-btn');
+  const importFileInput = document.getElementById('import-file');
+
+  if (exportBtn) {
+    exportBtn.addEventListener('click', () => {
+      const messages = [];
+      chatLog.querySelectorAll('.ai-bubble').forEach(bubble => {
+        messages.push({ className: bubble.className, htmlContent: bubble.innerHTML });
+      });
+
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(messages, null, 2));
+      const anchor = document.createElement('a');
+      anchor.setAttribute("href", dataStr);
+      anchor.setAttribute("download", `eduquest_session_${Date.now()}.json`);
+      anchor.click();
+      anchor.remove();
+    });
+  }
+
+  if (importFileInput) {
+    importFileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        try {
+          const imported = JSON.parse(event.target.result);
+          if (Array.isArray(imported)) {
+            chatLog.innerHTML = '';
+            imported.forEach(msg => {
+              const bubble = document.createElement('div');
+              bubble.className = msg.className || 'ai-bubble system';
+              bubble.innerHTML = msg.htmlContent || '';
+              chatLog.appendChild(bubble);
+            });
+            chatLog.scrollTop = chatLog.scrollHeight;
+          }
+        } catch (err) {
+          alert('Invalid session JSON file.');
+        }
+      };
+      reader.readAsText(file);
+    });
+  }
+});
